@@ -1,24 +1,22 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaClient, StudyGroup } from '../../generated/prisma';
+import { StudyGroup } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class StudyGroupService {
   private prisma = new PrismaClient();
 
-  async create(data: { name: string }, userId: number): Promise<StudyGroup> {
-    if (!userId) {
-      throw new UnauthorizedException('No autorizado');
-    }
-    // Generar un código de invitación aleatorio (ejemplo simple)
+  async create({ name, adminId }: { name: string, adminId: number }): Promise<StudyGroup> {
     const inviteCode = Math.floor(100000 + Math.random() * 900000);
-
     return this.prisma.studyGroup.create({
       data: {
-        name: data.name,
-        adminId: userId,
-        isActive: true,
+        name,
         inviteCode,
-      },
+        isActive: true,
+        admin: {
+          connect: { id: adminId },
+        },
+      }
     });
   }
 
