@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum Method {
+  IA
+  MANUAL
+}
+
+model User {
+  id              Int               @id @default(autoincrement())
+  email           String            @unique
+  avatarUrl       String
+  birthdate       DateTime
+  name            String
+  password        String
+  groupMembers    GroupMember[]
+  StudyGroup      StudyGroup[]
+  SessionAnswered SessionAnswered[]
+  Document        Document[]
+}
+
+model StudyGroup {
+  id         Int     @id @default(autoincrement())
+  name       String
+  admin      User    @relation(fields: [adminId], references: [id])
+  adminId    Int
+  isActive   Boolean
+  inviteCode Int     @unique
+
+  groupMembers GroupMember[]
+  Document     Document[]
+  Session      Session[]
+}
+
+model GroupMember {
+  id           Int        @id @default(autoincrement())
+  user         User       @relation(fields: [userId], references: [id])
+  userId       Int
+  studyGroup   StudyGroup @relation(fields: [studyGroupId], references: [id])
+  studyGroupId Int
+  joinedAt     DateTime
+  role         Role
+
+  @@unique([studyGroupId, userId])
+}
+
+model Document {
+  id            Int        @id @default(autoincrement())
+  studyGroup    StudyGroup @relation(fields: [studyGroupId], references: [id])
+  studyGroupId  Int
+  user          User       @relation(fields: [userId], references: [id])
+  userId        Int
+  title         String
+  fileUrl       String
+  extractedText String
+  uploadedAt    DateTime
+  Question      Question[]
+}
+
+model Question {
+  id                 Int      @id @default(autoincrement())
+  document           Document @relation(fields: [documentId], references: [id])
+  documentId         Int
+  answerOptions      String[]
+  correctOptionIndex Int
+  generatedBy        Role
+}
+
+model Session {
+  id              Int               @id @default(autoincrement())
+  studyGroup      StudyGroup        @relation(fields: [studyGroupId], references: [id])
+  studyGroupId    Int
+  createdAt       DateTime
+  SessionAnswered SessionAnswered[]
+}
+
+model SessionAnswered {
+  id         Int      @id @default(autoincrement())
+  session    Session  @relation(fields: [sessionId], references: [id])
+  sessionId  Int
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  answeredAt DateTime
+  score      Int
+
+  @@unique([sessionId, userId])
+}
