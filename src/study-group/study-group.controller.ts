@@ -10,8 +10,8 @@ export class StudyGroupController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() body: { name: string }, @Req() req: Request) {
-    return this.studyGroupService.create({ name: body.name, adminId: (req as any).user.id });
+  create(@Body() body: { name: string, hexColor: string }, @Req() req: Request) {
+    return this.studyGroupService.create({ name: body.name, hexColor: body.hexColor, adminId: (req as any).user.id });
   }
 
   @Get()
@@ -19,9 +19,10 @@ export class StudyGroupController {
     return this.studyGroupService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.studyGroupService.findOne(Number(id));
+  @Get('find-all-of')
+  @UseGuards(JwtAuthGuard)
+  findAllOf(@Param('id') id: string, @Req() req: Request) {
+    return this.studyGroupService.findAllOf(Number(req.user?.id));
   }
 
   @Put(':id')
