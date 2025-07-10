@@ -20,13 +20,27 @@ export class StudyGroupService {
       }
     });
   }
+  async findOne(id: number): Promise<StudyGroup | null> {
+    return this.prisma.studyGroup.findUnique({
+      include: {
+        admin: {
+          select: {
+            id: true,
+            email: true,
+            avatarUrl: true,
+            name: true,
+          }
+        }
+      }, where: { id }
+    });
+  }
 
   async findAll(): Promise<StudyGroup[]> {
     return this.prisma.studyGroup.findMany();
   }
 
   async findAllOf(id: number): Promise<StudyGroup[] | null> {
-    return this.prisma.studyGroup.findMany({ where: { adminId: id } });
+    return this.prisma.studyGroup.findMany({ include: { admin: true }, where: { adminId: id } });
   }
 
   async update(id: number, data: { name?: string }): Promise<StudyGroup> {

@@ -21,8 +21,13 @@ export class StudyGroupController {
 
   @Get('find-all-of')
   @UseGuards(JwtAuthGuard)
-  findAllOf(@Param('id') id: string, @Req() req: Request) {
+  findAllOf(@Req() req: Request) {
     return this.studyGroupService.findAllOf(Number(req.user?.id));
+  }
+  @Get('findOne/:id')
+  @UseGuards(JwtAuthGuard)
+  findOne(@Param('id') id: string,) {
+    return this.studyGroupService.findOne(Number(id));
   }
 
   @Put(':id')
