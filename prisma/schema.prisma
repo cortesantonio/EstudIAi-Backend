@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -38,7 +39,7 @@ model GroupMember {
   id           Int        @id @default(autoincrement())
   userId       Int
   studyGroupId Int
-  joinedAt     DateTime
+  joinedAt     DateTime   @default(now())
   role         Role
   studyGroup   StudyGroup @relation(fields: [studyGroupId], references: [id])
   user         User       @relation(fields: [userId], references: [id])
