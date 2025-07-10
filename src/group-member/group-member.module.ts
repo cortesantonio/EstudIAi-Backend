@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { GroupMemberController } from './group-member.controller';
 import { GroupMemberService } from './group-member.service';
+import { GroupMemberController } from './group-member.controller';
 
 @Module({
   controllers: [GroupMemberController],
