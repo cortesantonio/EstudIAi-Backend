@@ -14,6 +14,7 @@ interface ParamsGenerator {
 @Controller('quizzes')
 export class QuizzesController {
     constructor(private readonly quizzesService: QuizzesService) { }
+    
     @Post("/gen-with-ia")
     GenerarQuiz(@Body() body: { focusing: string, quantity: number, title: string, typeOptions: string[], document: string }) {
         return this.quizzesService.GenerarQuiz({ focusing: body.focusing, quantity: body.quantity, title: body.title, typeOptions: body.typeOptions, document: body.document });

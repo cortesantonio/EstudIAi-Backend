@@ -1,20 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
-import OpenAI from 'openai';
-
-const client = new OpenAI();
+import { OpenAIService } from 'src/open-ai/open-ai.service';
 
 @Injectable()
 export class QuizzesService {
-    private prisma = new PrismaClient();
-
+    constructor(private readonly OpenAI: OpenAIService) {
+        this.OpenAI = new OpenAIService()
+    }
+    
     async GenerarQuiz({ focusing, quantity, title, typeOptions, document }: { focusing: string, quantity: number, title: string, typeOptions: string[], document: string }): Promise<any> {
-        const response = await client.responses.create({
-            model: "gpt-4.1",
-            input: "Write a one-sentence bedtime story about a unicorn."
-        });
-
-        return response.output_text
+        return this.OpenAI.generateQuizz(`Genera un quiz de ${quantity} preguntas sobre ${focusing} con las siguientes opciones: ${typeOptions.join(', ')}. El quiz debe tener un titulo: ${title} y debe ser sobre el siguiente documento: ${document}. La respuesta debe ser un JSON con el siguiente formato: { "quiz": [ { "question": "Pregunta", "options": ["Opción 1", "Opción 2", "Opción 3", "Opción 4"], "answer": "Opción correcta" } ] }`)
 
     }
 
