@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -16,7 +15,6 @@ model User {
   birthdate       DateTime
   name            String
   password        String
-  Document        Document[]
   groupMembers    GroupMember[]
   SessionAnswered SessionAnswered[]
   StudyGroup      StudyGroup[]
@@ -50,31 +48,32 @@ model GroupMember {
 model Document {
   id            Int        @id @default(autoincrement())
   studyGroupId  Int
-  userId        Int
   title         String
   fileUrl       String
   extractedText String
   uploadedAt    DateTime
   studyGroup    StudyGroup @relation(fields: [studyGroupId], references: [id])
-  user          User       @relation(fields: [userId], references: [id])
   Question      Question[]
-}
-
-model Question {
-  id                 Int      @id @default(autoincrement())
-  documentId         Int
-  answerOptions      String[]
-  correctOptionIndex Int
-  generatedBy        Role
-  document           Document @relation(fields: [documentId], references: [id])
 }
 
 model Session {
   id              Int               @id @default(autoincrement())
   studyGroupId    Int
+  title           String
+  description     String?
+  duration        Int
   createdAt       DateTime
   studyGroup      StudyGroup        @relation(fields: [studyGroupId], references: [id])
   SessionAnswered SessionAnswered[]
+}
+
+model Question {
+  id                 Int       @id @default(autoincrement())
+  answerOptions      String[]
+  correctOptionIndex Int
+  generatedBy        Role
+  Document           Document? @relation(fields: [documentId], references: [id])
+  documentId         Int?
 }
 
 model SessionAnswered {
