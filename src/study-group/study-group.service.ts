@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { StudyGroup } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 
