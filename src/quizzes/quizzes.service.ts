@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { OpenAIService } from 'src/open-ai/open-ai.service';
-import { PrismaClient, StudyGroup } from '@prisma/client';
+import { FlashcardsService } from 'src/flashcards/flashcards.service';
+import { PrismaClient } from '@prisma/client';
 import { Session } from '@prisma/client';
-import type { CreateSessionInterface, Cuestionario } from './interface';
+import type { CreateSessionInterface, Cuestionario, GenerateQuizInput } from './interface';
+import type { flashcard, flashcardInput } from 'src/flashcards/Dtos';
+
 @Injectable()
 export class QuizzesService {
     private prisma = new PrismaClient();
 
-    constructor(private readonly OpenAI: OpenAIService) {
+    constructor(private readonly OpenAI: OpenAIService, private readonly Flashcards: FlashcardsService) {
         this.OpenAI = new OpenAIService()
-
     }
 
     async CreateSession({ title, description, duration, studyGroupId }: CreateSessionInterface): Promise<Session> {
@@ -27,7 +29,8 @@ export class QuizzesService {
     }
 
 
-    async GenerarQuiz({ focusing, quantity, title, typeOptions, document, studyGroup }: { focusing: string, quantity: number, title: string, typeOptions: string[], document: string, studyGroup: StudyGroup }): Promise<any> {
+    async GenerarQuiz(input: GenerateQuizInput): Promise<any> {
+        const { focusing, quantity, title, typeOptions, studyGroupId } = input;
         const documentText = `
         La final de la Copa Mundial de la FIFA 2014 fue el partido final de la Copa del Mundo de 2014, la vigésima edición de la competición de la FIFA para selecciones nacionales de fútbol. El partido se jugó en el Estadio Maracaná de Río de Janeiro, Brasil, el 13 de julio de 2014, y lo disputaron Alemania y Argentina. El evento contó con la participación del anfitrión Brasil y otros 31 equipos que surgieron de la fase de clasificación, organizada por las seis confederaciones de la FIFA. Los 32 equipos compitieron en una fase de grupos, de la cual 16 equipos se clasificaron para la fase eliminatoria. De camino a la final, Alemania acabó primera del Grupo G, con dos victorias y un empate, tras lo cual derrotó a Argelia en octavos de final, a Francia en cuartos de final y a Brasil, por 7-1, en la semifinal. Argentina terminó líder del Grupo F con tres victorias, antes de derrotar a Suiza en octavos de final, Bélgica en cuartos de final y Países Bajos en la tanda de penales en semifinales. La final fue presenciada por 74 738 espectadores en el estadio, así como por más de mil millones de espectadores por televisión, siendo el árbitro del partido Nicola Rizzoli de Italia.
 
@@ -35,21 +38,29 @@ Gonzalo Higuaín perdió la oportunidad de anotar para Argentina en el primer ti
 
 La victoria de la selección alemana fue su cuarto título de la Copa del Mundo y el primero desde la reunificación, así como la primera victoria de un equipo europeo en América. Götze fue nombrado mejor jugador del partido y Messi recibió el Balón de Oro como jugador destacado del torneo de la FIFA. El seleccionador alemán, Joachim Löw, calificó el triunfo como la culminación de un proyecto iniciado diez años antes por su predecesor Jürgen Klinsmann y elogió el espíritu de su equipo. Su homólogo argentino, Alejandro Sabella, consideró que su equipo había tenido mala suerte al perder y calificó a sus jugadores de «guerreros». La selección no pudo defender su trofeo en la Copa del Mundo de 2018 en Rusia, convirtiéndose en el tercer campeón consecutivo en ser eliminado en la fase de grupos tras las derrotas contra México y Corea del Sur.
         `
-
-        const createQuizzes: Cuestionario = await this.OpenAI.generateQuizz(typeOptions, quantity, focusing, document)
+        const createQuizzes: Cuestionario = await this.OpenAI.generateQuizz(typeOptions, quantity, focusing, documentText)
         const newSession: CreateSessionInterface = {
             title: title,
             description: createQuizzes.descripcion,
             duration: quantity * 2, // un aproximado del tiempo que tardaria por pregunta, mejor pasarlo a float para un resultado mas exacto.
-            studyGroupId: studyGroup.id
+            studyGroupId: studyGroupId
         }
-        const createSession = this.CreateSession(newSession) // con este se crea la session para luego tomar el id de la session y hacer la asociación
+
+        const createSession = await this.CreateSession(newSession) // con este se crea la session para luego tomar el id de la session y hacer la asociación
+        const sessionID = createSession.id
 
 
-
-
-
-        return documentText
+        return createSession
     }
+
+    async GetSessions(studyGroupId: number): Promise<Session[]> {
+        return this.prisma.session.findMany({
+            where: {
+                studyGroupId: studyGroupId
+            }
+        })
+    }
+
+    
 
 }

@@ -1,22 +1,21 @@
-import { Controller, Post, UseGuards, Body, Req } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Req, Get, Param } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-
-interface ParamsGenerator {
-    focusing: string; /* enfoque, conceptos, generalidades, muy especificos, variados */
-    quantity: number;
-    title: string;
-    typeOptions: string[]; /* seleccion multiple, verdadero y falso, seleccion unica, respuestas corta  */
-    document: string;
-
-}
-
+import type { GenerateQuizInput } from './interface';
+import { flashcardInput } from 'src/flashcards/Dtos';
 @Controller('quizzes')
 export class QuizzesController {
     constructor(private readonly quizzesService: QuizzesService) { }
-    
+
     @Post("/gen-with-ia")
-    GenerarQuiz(@Body() body: { focusing: string, quantity: number, title: string, typeOptions: string[], document: string }) {
-        return this.quizzesService.GenerarQuiz({ focusing: body.focusing, quantity: body.quantity, title: body.title, typeOptions: body.typeOptions, document: body.document });
+    GenerarQuiz(@Body() body: GenerateQuizInput) {
+        return this.quizzesService.GenerarQuiz(body);
     }
+
+    @Get('/get-session/:id')
+    async GetSessions(@Param('id') id: string) {
+        return this.quizzesService.GetSessions(Number(id));
+    }
+
+   
+
 }
