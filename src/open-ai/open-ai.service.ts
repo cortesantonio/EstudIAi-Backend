@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import { Cuestionario } from 'src/quizzes/interface';
-
+import type { flashcard, flashcardInput } from '../flashcards/Dtos';
 @Injectable()
 export class OpenAIService {
   private openai: OpenAI;
@@ -34,7 +34,8 @@ export class OpenAIService {
       Por cada pregunta, genera un objeto con la siguiente estructura JSON:
 
       {
-        "descripcion": "Este conjunto de preguntas evalúa el conocimiento sobre el tema X, abordando conceptos clave, comprensión de ideas principales y razonamiento lógico basado en el documento original.",
+        "descripcion": "Este conjunto de preguntas evalúa el conocimiento sobre el tema X, abordando conceptos 
+        clave, comprensión de ideas principales y razonamiento lógico basado en el documento original.",
         "preguntas": [
           {
             "pregunta": "Texto de la pregunta",
@@ -67,7 +68,7 @@ export class OpenAIService {
       ${documentText}
       """
 
-      Por favor, devuelve exactamente ${quantity} preguntas dentro de un array JSON con el formato especificado.
+      Por favor, devuelve un solo objeto JSON con el campo "descripcion" y el array "preguntas" con exactamente ${quantity} preguntas.
       `;
 
     const chatCompletion = await this.openai.chat.completions.create({
@@ -85,4 +86,37 @@ export class OpenAIService {
     }
 
   }
+
+  async generateFlashcards(input: flashcardInput): Promise<flashcard[]> {
+    const prompt = `
+      Genera ${input.quantity} tarjetas de estudio (flashcards) sobre el siguiente texto:
+
+      Texto: ${input.documentText}
+
+      Cada tarjeta debe contener:
+      - Una preguntas o conceptos clave en el anverso.
+      - Una respuesta o explicación detallada en el reverso.
+
+      Formato de salida:
+      [
+        {
+          "question": "Pregunta o concepto clave",
+          "answer": "Respuesta o explicación detallada"
+        },
+        ...
+      ]
+
+      Asegúrate de que las preguntas sean claras y las respuestas precisas, basadas en el texto proporcionado.
+    `;
+
+    const chatCompletion = await this.openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    const content = chatCompletion.choices[0]?.message?.content;
+    if (!content) throw new Error('Respuesta vacía de OpenAI');
+    return JSON.parse(content);
+  }
+
 }
