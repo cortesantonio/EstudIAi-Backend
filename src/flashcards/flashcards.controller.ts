@@ -1,6 +1,7 @@
-import { Controller, Get, Body, Post } from '@nestjs/common';
+import { Controller, Get, Body, Post, UseGuards} from '@nestjs/common';
 import { FlashcardsService } from './flashcards.service';
 import { flashcardInput } from 'src/flashcards/Dtos';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('flashcards')
 export class FlashcardsController {
@@ -8,6 +9,7 @@ export class FlashcardsController {
 
 
     @Post("/getAllOf")
+    @UseGuards(JwtAuthGuard)
     getFlashCards(@Body() body: { studyGroupId: string }) {
         return this.FlashCardsService.getFlashcards(parseInt(body.studyGroupId));
     }
