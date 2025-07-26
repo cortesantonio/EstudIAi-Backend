@@ -51,7 +51,7 @@ model Document {
   studyGroupId  Int
   title         String
   fileUrl       String
-  extractedText String
+  extractedText String?    @db.Text
   uploadedAt    DateTime
   studyGroup    StudyGroup @relation(fields: [studyGroupId], references: [id])
   Question      Question[]
