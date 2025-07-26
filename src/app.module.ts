@@ -9,10 +9,12 @@ import { QuizzesModule } from './quizzes/quizzes.module';
 import { OpenAiModule } from './open-ai/open-ai.module';
 import { FlashcardsService } from './flashcards/flashcards.service';
 import { FlashcardsModule } from './flashcards/flashcards.module';
+import { DocumentModule } from './document/document.module';
+import { DocumentService } from './document/document.service';
 
 @Module({
-  imports: [StudyGroupModule, UserModule, GroupMemberModule, AuthModule, QuizzesModule, OpenAiModule, FlashcardsModule],
+  imports: [StudyGroupModule, UserModule, GroupMemberModule, AuthModule, QuizzesModule, OpenAiModule, FlashcardsModule, DocumentModule],
   controllers: [AppController],
-  providers: [AppService, FlashcardsService],
+  providers: [AppService, FlashcardsService, DocumentService],
 })
 export class AppModule {}
