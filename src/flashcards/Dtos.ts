@@ -1,6 +1,6 @@
 export interface flashcardInput {
     quantity: number;
-    documentText: string;
+    documentText?: string;
     studyGroupId: number;
 }
 export interface flashcard {
