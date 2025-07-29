@@ -10,7 +10,6 @@ export class DocumentController {
 
     @Post('/get')
     getDocument(@Body() Body: { studyGroupId: number }) {
-        console.log(Body.studyGroupId)
         return this.DocumentService.getDocument(Body.studyGroupId as number);
     }
 
