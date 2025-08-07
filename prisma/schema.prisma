@@ -66,6 +66,7 @@ model Session {
   createdAt       DateTime
   studyGroup      StudyGroup        @relation(fields: [studyGroupId], references: [id])
   SessionAnswered SessionAnswered[]
+  Question        Question[]
 }
 
 model Flashcards {
@@ -78,8 +79,13 @@ model Flashcards {
 
 model Question {
   id                 Int       @id @default(autoincrement())
+  Session            Session   @relation(fields: [sessionId], references: [id])
+  sessionId          Int
+  questionText       String    @db.Text
   answerOptions      String[]
   correctOptionIndex Int
+  explanation        String    @db.Text
+  type               String
   generatedBy        Role
   Document           Document? @relation(fields: [documentId], references: [id])
   documentId         Int?
