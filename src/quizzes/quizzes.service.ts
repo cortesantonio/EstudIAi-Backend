@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { OpenAIService } from 'src/open-ai/open-ai.service';
-import { FlashcardsService } from 'src/flashcards/flashcards.service';
-import { PrismaClient } from '@prisma/client';
+import { Method, PrismaClient, Question, Role } from '@prisma/client';
 import { Session } from '@prisma/client';
-import type { CreateSessionInterface, Cuestionario, GenerateQuizInput } from './interface';
-import type { flashcard, flashcardInput } from 'src/flashcards/Dtos';
+import type { CreateSessionInterface, Cuestionario, GenerateQuizInput, Pregunta } from './interface';
 import { DocumentService } from 'src/document/document.service';
-
+import { response } from 'express';
 @Injectable()
 export class QuizzesService {
     private prisma = new PrismaClient();
@@ -36,7 +34,8 @@ export class QuizzesService {
         const document = await this.Document.getDocument(studyGroupId);
         if (!document?.extractedText) {
             throw new Error('No se encontro el documento');
-        }        
+        }
+        const documentId = 1;
 
         const createQuizzes: Cuestionario = await this.OpenAI.generateQuizz(typeOptions, quantity, focusing, document.extractedText)
         const newSession: CreateSessionInterface = {
@@ -46,11 +45,34 @@ export class QuizzesService {
             studyGroupId: studyGroupId
         }
 
-        const createSession = await this.CreateSession(newSession) // con este se crea la session para luego tomar el id de la session y hacer la asociación
+        const createSession = await this.CreateSession(newSession)
+        // con este se crea la session para luego tomar el id de la session y hacer la asociación
         const sessionID = createSession.id
 
+        const preguntas: Pregunta[] = createQuizzes.preguntas;
+        for (let i = 0; i < preguntas.length; i++) {
+            const pregunta = preguntas[i];
 
-        return createSession
+            try {
+                const response = await this.prisma.question.create({
+                    data: {
+                        questionText: pregunta.pregunta,
+                        type: pregunta.tipo,
+                        answerOptions: pregunta.opciones || [],
+                        correctOptionIndex: pregunta.opciones?.indexOf(pregunta.respuesta_correcta) || 0,
+                        explanation: pregunta.explicacion,
+                        sessionId: sessionID,
+                        generatedBy: "ADMIN",
+                        documentId: documentId
+                    }
+                })
+                console.log("Pregunta creada correctamente:", response);
+            } catch (error) {
+                console.error(`Error al crear la pregunta en el índice ${i}:`, error);
+            }
+
+        }
+        return preguntas
     }
 
     async GetSessions(studyGroupId: number): Promise<Session[]> {
