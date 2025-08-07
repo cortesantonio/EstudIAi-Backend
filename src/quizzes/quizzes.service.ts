@@ -35,7 +35,6 @@ export class QuizzesService {
         if (!document?.extractedText) {
             throw new Error('No se encontro el documento');
         }
-        const documentId = 1;
 
         const createQuizzes: Cuestionario = await this.OpenAI.generateQuizz(typeOptions, quantity, focusing, document.extractedText)
         const newSession: CreateSessionInterface = {
@@ -63,7 +62,7 @@ export class QuizzesService {
                         explanation: pregunta.explicacion,
                         sessionId: sessionID,
                         generatedBy: "ADMIN",
-                        documentId: documentId
+                        documentId: document.id
                     }
                 })
                 console.log("Pregunta creada correctamente:", response);
@@ -72,7 +71,7 @@ export class QuizzesService {
             }
 
         }
-        return preguntas
+        return
     }
 
     async GetSessions(studyGroupId: number): Promise<Session[]> {
