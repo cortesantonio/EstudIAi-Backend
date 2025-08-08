@@ -2,6 +2,9 @@ import { Controller, Post, UseGuards, Body, Req, Get, Param } from '@nestjs/comm
 import { QuizzesService } from './quizzes.service';
 import type { GenerateQuizInput } from './interface';
 import { flashcardInput } from 'src/flashcards/Dtos';
+import type { ResultadoDTO } from './interface';
+
+
 @Controller('quizzes')
 export class QuizzesController {
     constructor(private readonly quizzesService: QuizzesService) { }
@@ -16,6 +19,10 @@ export class QuizzesController {
         return this.quizzesService.GetSessions(Number(id));
     }
 
-   
+    @Post('/session')
+    async RegistrarRespuestas(@Body() resultado: ResultadoDTO ) {
+        return this.quizzesService.RegistrarResultado(resultado)
+    }
+
 
 }

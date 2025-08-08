@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { OpenAIService } from 'src/open-ai/open-ai.service';
-import { Method, PrismaClient, Question, Role } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { Session } from '@prisma/client';
 import type { CreateSessionInterface, Cuestionario, GenerateQuizInput, Pregunta } from './interface';
 import { DocumentService } from 'src/document/document.service';
-import { response } from 'express';
+import type { ResultadoDTO } from './interface';
 @Injectable()
 export class QuizzesService {
     private prisma = new PrismaClient();
@@ -82,6 +82,19 @@ export class QuizzesService {
         })
     }
 
+    async RegistrarResultado(juego: ResultadoDTO) {
+        const { sessionId, userId, score } = juego;
+
+        return this.prisma.sessionAnswered.create({
+            data: {
+                sessionId: sessionId,
+                userId: userId,
+                score: score,
+                answeredAt: new Date()
+
+            }
+        })
+    }
 
 
 }

@@ -40,3 +40,8 @@ export interface Session {
 }
 
 
+export interface ResultadoDTO {
+    sessionId: number,
+    userId: number,
+    score: number,
+}
