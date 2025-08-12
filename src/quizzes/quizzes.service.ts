@@ -82,6 +82,14 @@ export class QuizzesService {
         })
     }
 
+    async GetGame(idSession: number){
+        return this.prisma.question.findMany({
+            where: {
+                sessionId: idSession
+            }
+        })
+    }
+
     async RegistrarResultado(juego: ResultadoDTO) {
         const { sessionId, userId, score } = juego;
 

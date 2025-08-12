@@ -1,7 +1,6 @@
-import { Controller, Post, UseGuards, Body, Req, Get, Param } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Req, Get, Param, Session } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
 import type { GenerateQuizInput } from './interface';
-import { flashcardInput } from 'src/flashcards/Dtos';
 import type { ResultadoDTO } from './interface';
 
 
@@ -20,8 +19,14 @@ export class QuizzesController {
     }
 
     @Post('/session')
-    async RegistrarRespuestas(@Body() resultado: ResultadoDTO ) {
+    async RegistrarRespuestas(@Body() resultado: ResultadoDTO) {
         return this.quizzesService.RegistrarResultado(resultado)
+    }
+
+
+    @Get('/get-game/:id')
+    async GetGame(@Param('id') id: string) {
+        return this.quizzesService.GetGame(Number(id));
     }
 
 
