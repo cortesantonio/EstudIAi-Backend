@@ -1,7 +1,7 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Req, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto, AuthResponse } from './dto/auth.dto';
-
+import { JwtAuthGuard } from './jwt-auth.guard';
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) { }
@@ -16,6 +16,11 @@ export class AuthController {
     async login(@Body() loginDto: LoginDto): Promise<AuthResponse> {
         return this.authService.login(loginDto);
     }
+    @Post("isTokenValid")
+    @UseGuards(JwtAuthGuard)
+    async isTokenValid() {
+        return { valid: true };
+    }
 
-    
+
 } 
