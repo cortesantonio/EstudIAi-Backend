@@ -10,7 +10,7 @@ export interface Pregunta {
   pregunta: string;
   tipo: string;
   opciones?: string[]; // Solo presente si tipo === 'selección multiple'
-  respuesta_correcta: string;
+  respuesta_correcta: number;
   explicacion: string;
 }
 
@@ -41,7 +41,7 @@ export interface Session {
 
 
 export interface ResultadoDTO {
-    sessionId: number,
-    userId: number,
-    score: number,
+  sessionId: number,
+  userId: number,
+  score: number,
 }

@@ -46,13 +46,13 @@ export class OpenAIService {
               "C. texto",
               "D. texto"
             ],// Solo incluir si el tipo es 'selección multiple'
-            "respuesta_correcta": "Texto de la respuesta correcta",
+            "respuesta_correcta": index de opciones,
             "explicacion": "Explicación breve basada en el documento original"
           },
           {
             "pregunta": "Texto de otra pregunta",
             "tipo": "verdadero y falso",
-            "respuesta_correcta": "Verdadero",
+            "respuesta_correcta": 0 | 1 (0 para falso, 1 para verdadero),
             "explicacion": "Explicación breve basada en el documento original"
           }
         ]
