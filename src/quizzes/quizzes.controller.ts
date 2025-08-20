@@ -2,6 +2,7 @@ import { Controller, Post, UseGuards, Body, Req, Get, Param, Session } from '@ne
 import { QuizzesService } from './quizzes.service';
 import type { GenerateQuizInput } from './interface';
 import type { ResultadoDTO } from './interface';
+import { SessionAnswered } from '@prisma/client';
 
 
 @Controller('quizzes')
@@ -18,8 +19,8 @@ export class QuizzesController {
         return this.quizzesService.GetSessions(Number(id));
     }
 
-    @Post('/session')
-    async RegistrarRespuestas(@Body() resultado: ResultadoDTO) {
+    @Post('/save-result')
+    async RegistrarRespuestas(@Body() resultado: SessionAnswered) {
         return this.quizzesService.RegistrarResultado(resultado)
     }
 
@@ -27,6 +28,10 @@ export class QuizzesController {
     @Get('/get-game/:id')
     async GetGame(@Param('id') id: string) {
         return this.quizzesService.GetGame(Number(id));
+    }
+    @Post('/get-session-answered')
+    async getSessionAnswered(@Body() ids: { sessionId: number, userId: number }) {
+        return this.quizzesService.sessionsIsAnswered(ids)
     }
 
 

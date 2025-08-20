@@ -58,14 +58,13 @@ export class QuizzesService {
                         questionText: pregunta.pregunta,
                         type: pregunta.tipo,
                         answerOptions: pregunta.opciones || [],
-                        correctOptionIndex: pregunta.opciones?.indexOf(pregunta.respuesta_correcta) || 0,
+                        correctOptionIndex: pregunta.respuesta_correcta,
                         explanation: pregunta.explicacion,
                         sessionId: sessionID,
                         generatedBy: "ADMIN",
                         documentId: document.id
                     }
                 })
-                console.log("Pregunta creada correctamente:", response);
             } catch (error) {
                 console.error(`Error al crear la pregunta en el índice ${i}:`, error);
             }
@@ -82,7 +81,7 @@ export class QuizzesService {
         })
     }
 
-    async GetGame(idSession: number){
+    async GetGame(idSession: number) {
         return this.prisma.question.findMany({
             where: {
                 sessionId: idSession
@@ -103,6 +102,14 @@ export class QuizzesService {
             }
         })
     }
-
+    async sessionsIsAnswered(ids: { sessionId: number, userId: number }) {
+        return this.prisma.sessionAnswered.findFirst({
+            where: {
+                sessionId: ids.sessionId,
+                userId: ids.userId
+            }
+        }
+        )
+    }
 
 }
