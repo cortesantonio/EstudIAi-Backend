@@ -45,3 +45,16 @@ export interface ResultadoDTO {
   userId: number,
   score: number,
 }
+
+export interface SessionWithAnsweredInfo {
+  id: number;
+  studyGroupId: number;
+  title: string;
+  description: string | null;
+  duration: number;
+  createdAt: Date;
+  isAnswered: boolean;
+  answeredAt?: Date;
+  score?: number;
+  totalQuestions: number;
+}

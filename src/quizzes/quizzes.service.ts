@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OpenAIService } from 'src/open-ai/open-ai.service';
 import { PrismaClient } from '@prisma/client';
 import { Session } from '@prisma/client';
-import type { CreateSessionInterface, Cuestionario, GenerateQuizInput, Pregunta } from './interface';
+import type { CreateSessionInterface, Cuestionario, GenerateQuizInput, Pregunta, SessionWithAnsweredInfo } from './interface';
 import { DocumentService } from 'src/document/document.service';
 import type { ResultadoDTO } from './interface';
 @Injectable()
@@ -73,12 +73,38 @@ export class QuizzesService {
         return
     }
 
-    async GetSessions(studyGroupId: number): Promise<Session[]> {
-        return this.prisma.session.findMany({
+    async GetSessions(studyGroupId: number): Promise<SessionWithAnsweredInfo[]> {
+        const sessions = await this.prisma.session.findMany({
             where: {
                 studyGroupId: studyGroupId
+            },
+            include: {
+                SessionAnswered: {
+                    select: {
+                        answeredAt: true,
+                        score: true
+                    }
+                },
+                Question: {
+                    select: {
+                        id: true
+                    }
+                }
             }
-        })
+        });
+
+        return sessions.map(session => ({
+            id: session.id,
+            studyGroupId: session.studyGroupId,
+            title: session.title,
+            description: session.description,
+            duration: session.duration,
+            createdAt: session.createdAt,
+            isAnswered: session.SessionAnswered.length > 0,
+            answeredAt: session.SessionAnswered[0]?.answeredAt,
+            score: session.SessionAnswered[0]?.score,
+            totalQuestions: session.Question.length
+        }));
     }
 
     async GetGame(idSession: number) {
