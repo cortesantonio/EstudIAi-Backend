@@ -77,7 +77,7 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
-        avatarUrl: user.avatarUrl || "",
+        avatarUrl: user.avatarUrl || "/defaultAvatar.webp",
         birthdate: user.birthdate,
       },
       token,
