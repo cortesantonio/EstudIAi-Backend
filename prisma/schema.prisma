@@ -15,6 +15,7 @@ model User {
   birthdate       DateTime
   name            String
   password        String
+  career          String?
   groupMembers    GroupMember[]
   SessionAnswered SessionAnswered[]
   StudyGroup      StudyGroup[]

@@ -14,7 +14,11 @@ export class UserService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  async update(id: number, data: { email?: string; name?: string; password?: string }): Promise<User> {
+  async update(id: number, data: { email?: string; name?: string; career?: string }): Promise<User> {
+
+    console.log(data);
+    console.log(id);
+    
     return this.prisma.user.update({ where: { id }, data });
   }
 

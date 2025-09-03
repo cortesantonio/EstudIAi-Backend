@@ -16,7 +16,7 @@ export class UserController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() body: { email?: string; name?: string; password?: string }) {
+  update(@Param('id') id: string, @Body() body: { email?: string; name?: string;  career?: string }) {
     return this.userService.update(Number(id), body);
   }
 
