@@ -12,14 +12,27 @@ export class OpenAIService {
     });
   }
 
-  async generateQuizz(typeOptions: string[], quantity: number, focusing: string, documentText: string): Promise<Cuestionario> {
-    type FocusingKey = 'conceptos' | 'generalidades' | 'especificos' | 'variados';
+  async generateQuizz(
+    typeOptions: string[],
+    quantity: number,
+    focusing: string,
+    documentText: string,
+  ): Promise<Cuestionario> {
+    type FocusingKey =
+      | 'conceptos'
+      | 'generalidades'
+      | 'especificos'
+      | 'variados';
 
     const focusingDescriptions: Record<FocusingKey, string> = {
-      "conceptos": "Concéntrate en los conceptos clave del tema. Las preguntas deben abordar definiciones, principios o ideas fundamentales.",
-      "generalidades": "Enfócate en aspectos generales del tema, como contexto, historia, propósito o resumen general.",
-      "especificos": "Crea preguntas que se centren en detalles puntuales, datos precisos o afirmaciones concretas del texto.",
-      "variados": "Incluye una mezcla equilibrada de preguntas sobre conceptos, generalidades y detalles muy específicos del tema."
+      conceptos:
+        'Concéntrate en los conceptos clave del tema. Las preguntas deben abordar definiciones, principios o ideas fundamentales.',
+      generalidades:
+        'Enfócate en aspectos generales del tema, como contexto, historia, propósito o resumen general.',
+      especificos:
+        'Crea preguntas que se centren en detalles puntuales, datos precisos o afirmaciones concretas del texto.',
+      variados:
+        'Incluye una mezcla equilibrada de preguntas sobre conceptos, generalidades y detalles muy específicos del tema.',
     };
     const description = focusingDescriptions[focusing as FocusingKey];
     const prompt = `
@@ -27,7 +40,7 @@ export class OpenAIService {
 
       Debes seguir estrictamente estos parámetros:
 
-      - Tipos de pregunta permitidos: ${typeOptions.join(", ")}
+      - Tipos de pregunta permitidos: ${typeOptions.join(', ')}
       - Cantidad total de preguntas: ${quantity}
       - Enfoque: ${description}
 
@@ -84,7 +97,6 @@ export class OpenAIService {
       console.error('Error al parsear respuesta de OpenAI:', error);
       throw new Error('No se pudo generar el cuestionario.');
     }
-
   }
 
   async generateFlashcards(input: flashcardInput): Promise<flashcard[]> {
@@ -118,5 +130,4 @@ export class OpenAIService {
     if (!content) throw new Error('Respuesta vacía de OpenAI');
     return JSON.parse(content);
   }
-
 }

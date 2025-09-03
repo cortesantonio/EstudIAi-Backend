@@ -4,7 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<User[]> {
     return this.prisma.user.findMany();
@@ -14,11 +14,13 @@ export class UserService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  async update(id: number, data: { email?: string; name?: string; career?: string }): Promise<User> {
-
+  async update(
+    id: number,
+    data: { email?: string; name?: string; career?: string },
+  ): Promise<User> {
     console.log(data);
     console.log(id);
-    
+
     return this.prisma.user.update({ where: { id }, data });
   }
 

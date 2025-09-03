@@ -7,6 +7,5 @@ import { DocumentService } from 'src/document/document.service';
 @Module({
   controllers: [FlashcardsController],
   providers: [OpenAIService, FlashcardsService, DocumentService],
-
 })
-export class FlashcardsModule { }
+export class FlashcardsModule {}

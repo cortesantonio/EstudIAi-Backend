@@ -5,8 +5,12 @@ import { PrismaClient, GroupMember, Role } from '@prisma/client';
 export class GroupMemberService {
   private prisma = new PrismaClient();
 
-  async create(data: { userId: number; studyGroupId: number; role: Role }): Promise<GroupMember> {
-    return this.prisma.groupMember.create({ data })
+  async create(data: {
+    userId: number;
+    studyGroupId: number;
+    role: Role;
+  }): Promise<GroupMember> {
+    return this.prisma.groupMember.create({ data });
   }
 
   async findAll(): Promise<GroupMember[]> {
@@ -17,13 +21,14 @@ export class GroupMemberService {
       include: {
         user: {
           select: {
-            id:true,
+            id: true,
             email: true,
             avatarUrl: true,
-            name: true,            
-          }
-        }
-      }, where: { studyGroupId: id }
+            name: true,
+          },
+        },
+      },
+      where: { studyGroupId: id },
     });
   }
 
@@ -31,7 +36,10 @@ export class GroupMemberService {
     return this.prisma.groupMember.findUnique({ where: { id } });
   }
 
-  async update(id: number, data: { userId?: number; studyGroupId?: number; role?: Role }): Promise<GroupMember> {
+  async update(
+    id: number,
+    data: { userId?: number; studyGroupId?: number; role?: Role },
+  ): Promise<GroupMember> {
     return this.prisma.groupMember.update({ where: { id }, data });
   }
 

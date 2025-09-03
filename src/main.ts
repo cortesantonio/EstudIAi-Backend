@@ -7,6 +7,8 @@ async function bootstrap() {
     origin: '*',
   });
   await app.listen(3000, '0.0.0.0');
-
 }
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('Error starting the application:', error);
+  process.exit(1);
+});

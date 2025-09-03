@@ -1,4 +1,4 @@
-import { Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { StudyGroup } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 
@@ -6,7 +6,15 @@ import { PrismaClient } from '@prisma/client';
 export class StudyGroupService {
   private prisma = new PrismaClient();
 
-  async create({ name, hexColor, adminId }: { name: string, hexColor: string, adminId: number }): Promise<StudyGroup> {
+  async create({
+    name,
+    hexColor,
+    adminId,
+  }: {
+    name: string;
+    hexColor: string;
+    adminId: number;
+  }): Promise<StudyGroup> {
     const inviteCode = Math.floor(100000 + Math.random() * 900000);
     return this.prisma.studyGroup.create({
       data: {
@@ -17,7 +25,7 @@ export class StudyGroupService {
         admin: {
           connect: { id: adminId },
         },
-      }
+      },
     });
   }
   async findOne(id: number): Promise<StudyGroup | null> {
@@ -29,9 +37,10 @@ export class StudyGroupService {
             email: true,
             avatarUrl: true,
             name: true,
-          }
-        }
-      }, where: { id }
+          },
+        },
+      },
+      where: { id },
     });
   }
 
@@ -40,7 +49,10 @@ export class StudyGroupService {
   }
 
   async findAllOf(id: number): Promise<StudyGroup[] | null> {
-    return this.prisma.studyGroup.findMany({ include: { admin: true }, where: { adminId: id } });
+    return this.prisma.studyGroup.findMany({
+      include: { admin: true },
+      where: { adminId: id },
+    });
   }
 
   async update(id: number, data: { name?: string }): Promise<StudyGroup> {

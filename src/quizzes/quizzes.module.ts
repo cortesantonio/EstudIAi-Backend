@@ -6,6 +6,6 @@ import { DocumentService } from 'src/document/document.service';
 
 @Module({
   controllers: [QuizzesController],
-  providers: [QuizzesService, OpenAIService, DocumentService]
+  providers: [QuizzesService, OpenAIService, DocumentService],
 })
 export class QuizzesModule {}

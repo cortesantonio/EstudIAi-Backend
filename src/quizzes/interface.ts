@@ -1,10 +1,9 @@
 export interface CreateSessionInterface {
-  title: string,
-  description: string,
-  duration: number,
-  studyGroupId: number
+  title: string;
+  description: string;
+  duration: number;
+  studyGroupId: number;
 }
-
 
 export interface Pregunta {
   pregunta: string;
@@ -19,7 +18,6 @@ export interface Cuestionario {
   preguntas: Pregunta[];
 }
 
-
 export interface GenerateQuizInput {
   focusing: string;
   quantity: number;
@@ -28,7 +26,6 @@ export interface GenerateQuizInput {
   studyGroupId: number;
 }
 
-
 export interface Session {
   id: number;
   studyGroupId: number;
@@ -36,14 +33,12 @@ export interface Session {
   description: string;
   duration: number;
   createdAt: Date;
-
 }
 
-
 export interface ResultadoDTO {
-  sessionId: number,
-  userId: number,
-  score: number,
+  sessionId: number;
+  userId: number;
+  score: number;
 }
 
 export interface SessionWithAnsweredInfo {
