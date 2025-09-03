@@ -13,7 +13,16 @@ import { DocumentModule } from './document/document.module';
 import { DocumentService } from './document/document.service';
 
 @Module({
-  imports: [StudyGroupModule, UserModule, GroupMemberModule, AuthModule, QuizzesModule, OpenAiModule, FlashcardsModule, DocumentModule],
+  imports: [
+    StudyGroupModule,
+    UserModule,
+    GroupMemberModule,
+    AuthModule,
+    QuizzesModule,
+    OpenAiModule,
+    FlashcardsModule,
+    DocumentModule,
+  ],
   controllers: [AppController],
   providers: [AppService, FlashcardsService, DocumentService],
 })
