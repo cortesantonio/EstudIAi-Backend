@@ -20,4 +20,4 @@ export class AuthResponse {
     birthdate: Date;
   };
   token: string;
-} 
+}
