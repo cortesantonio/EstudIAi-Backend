@@ -5,7 +5,7 @@ import type { flashcard, flashcardInput } from '../flashcards/Dtos';
 @Injectable()
 export class OpenAIService {
   private openai: OpenAI;
-
+  private model: string = 'o4-mini';
   constructor() {
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY, // Usa tu .env
@@ -85,7 +85,7 @@ export class OpenAIService {
       `;
 
     const chatCompletion = await this.openai.chat.completions.create({
-      model: 'gpt-4',
+      model: this.model,
       messages: [{ role: 'user', content: prompt }],
     });
 
@@ -122,7 +122,7 @@ export class OpenAIService {
     `;
 
     const chatCompletion = await this.openai.chat.completions.create({
-      model: 'gpt-4',
+      model: this.model,
       messages: [{ role: 'user', content: prompt }],
     });
 
